@@ -1,0 +1,136 @@
+ion-toolbar {
+  --background: var(--ion-color-primary);
+  --color: #fff;
+
+  ion-title {
+    font-weight: 600;
+  }
+
+  ion-button {
+    --color: #fff;
+  }
+}
+
+.stats-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 12px 16px;
+  background: var(--ion-color-primary);
+  color: #fff;
+  border-radius: 0 0 16px 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 12px rgba(var(--ion-color-primary-rgb), 0.3);
+
+  .stat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .stat-number {
+      font-size: 1.8rem;
+      font-weight: 700;
+      line-height: 1;
+
+      &.completed {
+        color: #a8f0c6;
+      }
+
+      &.total {
+        color: #ffd580;
+      }
+    }
+
+    .stat-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      opacity: 0.85;
+      margin-top: 2px;
+    }
+  }
+
+  .stat-divider {
+    width: 1px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.3);
+    margin: 0 8px;
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 32px;
+  text-align: center;
+  color: var(--ion-color-medium);
+
+  ion-icon {
+    font-size: 5rem;
+    margin-bottom: 16px;
+    color: var(--ion-color-primary);
+    opacity: 0.5;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin: 0 0 8px;
+  }
+
+  p {
+    font-size: 0.9rem;
+    margin: 0;
+    line-height: 1.5;
+  }
+}
+
+ion-list {
+  padding: 0 8px;
+}
+
+ion-item-sliding {
+  margin-bottom: 8px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+ion-item {
+  --border-radius: 12px;
+  --background: var(--ion-card-background, #fff);
+  --padding-start: 12px;
+  --inner-padding-end: 12px;
+  transition: opacity 0.2s ease;
+
+  &.completed-item {
+    opacity: 0.6;
+  }
+
+  ion-label {
+    h2 {
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 2px;
+      transition: text-decoration 0.2s;
+
+      &.strike {
+        text-decoration: line-through;
+        color: var(--ion-color-medium);
+      }
+    }
+
+    p {
+      font-size: 0.82rem;
+      color: var(--ion-color-medium);
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}
