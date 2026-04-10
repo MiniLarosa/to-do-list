@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-title>Mis Tareas</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="openAddTaskDialog()" id="add-task-btn">
+      <ion-button (click)="openAddModal()" id="add-task-btn">
         <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -11,7 +11,16 @@
 
 <ion-content>
 
-  <div class="stats-bar" *ngIf="tasks.length > 0">
+  <ion-segment [(ngModel)]="selectedCategoryId" scrollable="true" class="ion-margin-vertical">
+    <ion-segment-button value="all">
+      <ion-label>Todas</ion-label>
+    </ion-segment-button>
+    <ion-segment-button *ngFor="let cat of categories" [value]="cat.id">
+      <ion-label>{{ cat.name }}</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <div class="stats-bar" *ngIf="filteredTasks.length > 0">
     <div class="stat">
       <span class="stat-number">{{ pendingCount }}</span>
       <span class="stat-label">Pendientes</span>
@@ -23,19 +32,19 @@
     </div>
     <div class="stat-divider"></div>
     <div class="stat">
-      <span class="stat-number total">{{ tasks.length }}</span>
+      <span class="stat-number total">{{ filteredTasks.length }}</span>
       <span class="stat-label">Total</span>
     </div>
   </div>
 
-  <div class="empty-state" *ngIf="tasks.length === 0">
+  <div class="empty-state" *ngIf="filteredTasks.length === 0">
     <ion-icon name="checkmark-circle-outline"></ion-icon>
     <h2>Aún no hay tareas</h2>
     <p>Presiona el botón <strong>+</strong> para agregar tu primera tarea.</p>
   </div>
 
-  <ion-list *ngIf="tasks.length > 0" lines="none">
-    <ion-item-sliding *ngFor="let task of tasks; trackBy: trackByTaskId" [id]="'task-' + task.id">
+  <ion-list *ngIf="filteredTasks.length > 0" lines="none">
+    <ion-item-sliding *ngFor="let task of filteredTasks; trackBy: trackByTaskId" [id]="'task-' + task.id">
 
       <ion-item [class.completed-item]="task.completed" button (click)="toggleTask(task)">
         <ion-checkbox
@@ -47,6 +56,9 @@
         <ion-label>
           <h2 [class.strike]="task.completed">{{ task.title }}</h2>
           <p *ngIf="task.description">{{ task.description }}</p>
+          <ion-badge *ngIf="task.categoryId" [style.background-color]="getCategoryColor(task.categoryId)" style="margin-top: 5px;">
+            {{ getCategoryName(task.categoryId) }}
+          </ion-badge>
         </ion-label>
       </ion-item>
 
@@ -58,5 +70,40 @@
 
     </ion-item-sliding>
   </ion-list>
+
+  <ion-modal [isOpen]="isAddModalOpen" (didDismiss)="cancelAdd()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Nueva Tarea</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="cancelAdd()">Cerrar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <ion-item>
+          <ion-input label="Título" labelPlacement="floating" [(ngModel)]="newTaskTitle" placeholder="Ej: Comprar leche"></ion-input>
+        </ion-item>
+        
+        <ion-item>
+          <ion-textarea label="Descripción" labelPlacement="floating" [(ngModel)]="newTaskDescription" placeholder="(Opcional)"></ion-textarea>
+        </ion-item>
+
+        <ion-item>
+          <ion-select label="Categoría" labelPlacement="floating" [(ngModel)]="newTaskCategoryId" placeholder="Sin categoría">
+            <ion-select-option value="">Ninguna</ion-select-option>
+            <ion-select-option *ngFor="let cat of categories" [value]="cat.id">
+              {{ cat.name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-button expand="block" class="ion-margin-top" (click)="confirmAdd()" [disabled]="!newTaskTitle.trim()">
+          Agregar Tarea
+        </ion-button>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 
 </ion-content>

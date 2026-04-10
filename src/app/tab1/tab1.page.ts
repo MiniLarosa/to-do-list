@@ -1,8 +1,7 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { AlertController } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { Task } from '../models/task.model';
+import { Task, Category } from '../models/task.model';
 import { TaskService } from '../services/task.service';
 
 @Component({
@@ -13,15 +12,26 @@ import { TaskService } from '../services/task.service';
 })
 export class Tab1Page implements OnInit, OnDestroy {
   private taskService = inject(TaskService);
-  private alertCtrl = inject(AlertController);
 
   tasks: Task[] = [];
+  categories: Category[] = [];
   private destroy$ = new Subject<void>();
+
+  selectedCategoryId: string = 'all';
+
+  isAddModalOpen = false;
+  newTaskTitle = '';
+  newTaskDescription = '';
+  newTaskCategoryId = '';
 
   ngOnInit(): void {
     this.taskService.tasks$
       .pipe(takeUntil(this.destroy$))
       .subscribe(tasks => (this.tasks = tasks));
+
+    this.taskService.categories$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(categories => (this.categories = categories));
   }
 
   ngOnDestroy(): void {
@@ -33,34 +43,35 @@ export class Tab1Page implements OnInit, OnDestroy {
     return task.id;
   }
 
-  async openAddTaskDialog(): Promise<void> {
-    const alert = await this.alertCtrl.create({
-      header: 'Nueva Tarea',
-      inputs: [
-        {
-          name: 'title',
-          type: 'text',
-          placeholder: 'Título de la tarea...',
-        },
-        {
-          name: 'description',
-          type: 'textarea',
-          placeholder: 'Descripción (opcional)',
-        }
-      ],
-      buttons: [
-        { text: 'Cancelar', role: 'cancel' },
-        {
-          text: 'Agregar',
-          handler: (data) => {
-            if (data.title?.trim()) {
-              this.taskService.addTask(data.title, data.description);
-            }
-          }
-        }
-      ]
-    });
-    await alert.present();
+  get filteredTasks(): Task[] {
+    if (this.selectedCategoryId === 'all') {
+      return this.tasks;
+    }
+    return this.tasks.filter(t => t.categoryId === this.selectedCategoryId);
+  }
+
+  openAddModal(): void {
+    this.isAddModalOpen = true;
+  }
+
+  cancelAdd(): void {
+    this.isAddModalOpen = false;
+    this.resetForm();
+  }
+
+  confirmAdd(): void {
+    if (this.newTaskTitle.trim()) {
+      const catId = this.newTaskCategoryId ? this.newTaskCategoryId : undefined;
+      this.taskService.addTask(this.newTaskTitle, this.newTaskDescription, catId);
+      this.isAddModalOpen = false;
+      this.resetForm();
+    }
+  }
+
+  private resetForm(): void {
+    this.newTaskTitle = '';
+    this.newTaskDescription = '';
+    this.newTaskCategoryId = '';
   }
 
   async toggleTask(task: Task): Promise<void> {
@@ -72,10 +83,22 @@ export class Tab1Page implements OnInit, OnDestroy {
   }
 
   get pendingCount(): number {
-    return this.tasks.filter(t => !t.completed).length;
+    return this.filteredTasks.filter(t => !t.completed).length;
   }
 
   get completedCount(): number {
-    return this.tasks.filter(t => t.completed).length;
+    return this.filteredTasks.filter(t => t.completed).length;
+  }
+
+  getCategoryColor(categoryId?: string): string {
+    if (!categoryId) return 'medium';
+    const cat = this.categories.find(c => c.id === categoryId);
+    return cat ? cat.color : 'medium';
+  }
+
+  getCategoryName(categoryId?: string): string {
+    if (!categoryId) return 'Sin categoría';
+    const cat = this.categories.find(c => c.id === categoryId);
+    return cat ? cat.name : 'Desconocida';
   }
 }

@@ -1,4 +1,4 @@
-.coming-soon {
+.empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -23,5 +23,33 @@
   p {
     font-size: 0.9rem;
     margin: 0;
+  }
+}
+
+.color-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  margin-right: 16px;
+}
+
+.color-picker {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.color-option {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin: 0 auto;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  
+  &.selected {
+    transform: scale(1.2);
+    box-shadow: 0 0 0 3px var(--ion-color-light), 0 0 0 5px var(--ion-color-medium);
   }
 }
