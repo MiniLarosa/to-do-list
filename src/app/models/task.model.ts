@@ -1,6 +1,3 @@
-/**
- * Represents a single to-do task in the application.
- */
 export interface Category {
   id: string;
   name: string;

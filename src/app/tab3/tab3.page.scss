@@ -1,31 +1,13 @@
-ion-toolbar {
-  --background: var(--ion-color-primary);
-  --color: #fff;
-
-  ion-button {
-    --color: #fff;
-  }
-}
-
 .flags-page {
   --padding-bottom: 20px;
-  --background: radial-gradient(circle at top, rgba(var(--ion-color-primary-rgb), 0.08), transparent 34%), linear-gradient(180deg, rgba(var(--ion-color-primary-rgb), 0.04), transparent 180px);
 }
 
 .flags-hero {
-  margin: 12px 12px 14px;
   background:
     radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.18), transparent 18%),
     radial-gradient(circle at 82% 10%, rgba(255, 255, 255, 0.12), transparent 14%),
     linear-gradient(135deg, #0f172a 0%, #1d4ed8 55%, #7c3aed 100%);
-  color: #fff;
-  box-shadow: 0 18px 36px rgba(37, 99, 235, 0.3);
   overflow: hidden;
-
-  ion-card-header,
-  ion-card-content {
-    color: #fff;
-  }
 
   ion-badge {
     width: fit-content;
@@ -101,38 +83,12 @@ ion-toolbar {
   border: 1px solid rgba(var(--ion-color-medium-rgb), 0.12);
   box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
   overflow: hidden;
-  border-left: 6px solid transparent;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #0f172a, #1e293b);
 
   &.flag-card--on {
     border-color: rgba(var(--ion-color-success-rgb), 0.3);
     background: linear-gradient(90deg, rgba(var(--ion-color-success-rgb), 0.08), rgba(var(--ion-color-success-rgb), 0.03));
-  }
-
-  &.flag-card--banner {
-    border-left-color: #2563eb;
-
-    .flag-icon--banner {
-      background: rgba(37, 99, 235, 0.12);
-      color: #2563eb;
-    }
-  }
-
-  &.flag-card--filter {
-    border-left-color: #10b981;
-
-    .flag-icon--filter {
-      background: rgba(16, 185, 129, 0.12);
-      color: #10b981;
-    }
-  }
-
-  &.flag-card--fab {
-    border-left-color: #a855f7;
-
-    .flag-icon--fab {
-      background: rgba(168, 85, 247, 0.12);
-      color: #a855f7;
-    }
   }
 }
 
@@ -140,19 +96,6 @@ ion-toolbar {
   display: flex;
   align-items: center;
   gap: 12px;
-
-  .flag-icon {
-    display: grid;
-    place-items: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 14px;
-    flex-shrink: 0;
-
-    ion-icon {
-      font-size: 1.35rem;
-    }
-  }
 
   div {
     flex: 1;
@@ -169,8 +112,9 @@ ion-toolbar {
 }
 
 .flags-footer {
-  margin: 4px 12px 14px;
-  border: 1px dashed rgba(var(--ion-color-medium-rgb), 0.28);
-  background: rgba(var(--ion-color-medium-rgb), 0.05);
+  margin: 4px 12px 14px !important;
+  border: 1px dashed rgba(var(--ion-color-medium-rgb), 0.28) !important;
+  border-radius: 18px;
+  background: rgba(var(--ion-color-medium-rgb), 0.05) !important;
   color: var(--ion-color-medium-shade);
 }

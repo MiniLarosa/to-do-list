@@ -1,24 +1,26 @@
-<ion-item-sliding [id]="'task-' + task.id">
-  <ion-item [class.completed-item]="task.completed" button (click)="toggleTask.emit(task)">
-    <ion-checkbox
-      slot="start"
-      [checked]="task.completed"
-      (ionChange)="toggleTask.emit(task)"
-      (click)="$event.stopPropagation()">
-    </ion-checkbox>
+<div class="task-row">
+  <ion-item-sliding [id]="'task-' + task.id">
+    <ion-item class="task-card" [class.completed-item]="task.completed" button (click)="toggleTask.emit(task)">
+      <ion-checkbox
+        slot="start"
+        [checked]="task.completed"
+        (ionChange)="toggleTask.emit(task)"
+        (click)="$event.stopPropagation()">
+      </ion-checkbox>
 
-    <ion-label>
-      <h2 [class.strike]="task.completed">{{ task.title }}</h2>
-      <p *ngIf="task.description">{{ task.description }}</p>
-      <ion-badge *ngIf="task.categoryId" [style.background-color]="categoryColor" style="margin-top: 5px;">
-        {{ categoryName }}
-      </ion-badge>
-    </ion-label>
-  </ion-item>
+      <ion-label>
+        <h2 [class.strike]="task.completed">{{ task.title }}</h2>
+        <p *ngIf="task.description">{{ task.description }}</p>
+        <ion-badge *ngIf="task.categoryId" [style.background-color]="categoryColor" style="margin-top: 5px;">
+          {{ categoryName }}
+        </ion-badge>
+      </ion-label>
+    </ion-item>
 
-  <ion-item-options side="end">
-    <ion-item-option color="danger" (click)="deleteTask.emit(task)" [id]="'delete-' + task.id">
-      <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-    </ion-item-option>
-  </ion-item-options>
-</ion-item-sliding>
+    <ion-item-options side="end">
+      <ion-item-option color="danger" (click)="deleteTask.emit(task)" [id]="'delete-' + task.id">
+        <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+      </ion-item-option>
+    </ion-item-options>
+  </ion-item-sliding>
+</div>
