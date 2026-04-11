@@ -31,7 +31,6 @@ export class FirebaseRemoteConfigService {
     try {
       await fetchAndActivate(this.remoteConfig);
       this.updateFlags();
-      console.log('Remote Config loaded');
     } catch (error) {
       console.error('Error fetching remote config:', error);
       this.updateFlags();

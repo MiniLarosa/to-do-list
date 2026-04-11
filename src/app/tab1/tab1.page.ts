@@ -109,6 +109,11 @@ export class Tab1Page implements OnInit, OnDestroy {
     return cat ? cat.name : 'Desconocida';
   }
 
+  get currentDateDisplay(): string {
+    const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', year: 'numeric' };
+    return new Date().toLocaleDateString('es-ES', options);
+  }
+
   private applyFilters(): void {
     this.filteredTasks = this.selectedCategoryId === 'all'
       ? this.tasks

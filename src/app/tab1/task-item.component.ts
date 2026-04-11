@@ -5,8 +5,7 @@ import { Task } from '../models/task.model';
   selector: 'app-task-item',
   templateUrl: './task-item.component.html',
   standalone: false,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  styles: [':host { display: block; }'],
+  changeDetection: ChangeDetectionStrategy.OnPush, // Optimización Módulo 5
 })
 export class TaskItemComponent {
   @Input({ required: true }) task!: Task;

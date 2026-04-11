@@ -9,66 +9,70 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content [fullscreen]="true">
+  <div class="content-wrapper">
+    
+    <ion-card class="welcome-banner" *ngIf="remoteConfigService.showWelcomeBanner$ | async">
+      <ion-card-header>
+        <ion-badge color="light">Banner remoto activo</ion-badge>
+        <ion-title>¡Hola Sebastian!</ion-title>
+      </ion-card-header>
+      <ion-card-content>
+        Usaste Firebase Remote Config para activar este banner.
+      </ion-card-content>
+    </ion-card>
 
-  <ion-card class="welcome-banner" *ngIf="remoteConfigService.showWelcomeBanner$ | async">
-    <ion-card-header>
-      <ion-badge color="light">Banner remoto activo</ion-badge>
-      <ion-title>¡Hola Sebastian!</ion-title>
-    </ion-card-header>
-    <ion-card-content>
-      Usaste Firebase Remote Config para activar este banner en tiempo real. Se puede apagar desde Firebase sin publicar una nueva versión.
-    </ion-card-content>
-  </ion-card>
+    <ion-segment *ngIf="remoteConfigService.showCategoryFilter$ | async" 
+                 [(ngModel)]="selectedCategoryId" (ionChange)="onCategoryChange()" 
+                 scrollable="true" class="ion-margin-vertical">
+      <ion-segment-button value="all">
+        <ion-label>Todas</ion-label>
+      </ion-segment-button>
+      <ion-segment-button *ngFor="let cat of categories; trackBy: trackByCategoryId" [value]="cat.id">
+        <ion-label>{{ cat.name }}</ion-label>
+      </ion-segment-button>
+    </ion-segment>
 
-  <ion-segment *ngIf="remoteConfigService.showCategoryFilter$ | async" 
-               [(ngModel)]="selectedCategoryId" (ionChange)="onCategoryChange()" scrollable="true" class="ion-margin-vertical">
-    <ion-segment-button value="all">
-      <ion-label>Todas</ion-label>
-    </ion-segment-button>
-    <ion-segment-button *ngFor="let cat of categories; trackBy: trackByCategoryId" [value]="cat.id">
-      <ion-label>{{ cat.name }}</ion-label>
-    </ion-segment-button>
-  </ion-segment>
-
-  <div class="remote-hint" *ngIf="!(remoteConfigService.showCategoryFilter$ | async)">
-    <ion-icon name="layers-outline"></ion-icon>
-    <span>El filtro de categorías está oculto por Remote Config.</span>
-  </div>
-
-  <div class="stats-bar" *ngIf="filteredTasks.length > 0">
-    <div class="stat">
-      <span class="stat-number">{{ taskStats.pending }}</span>
-      <span class="stat-label">Pendientes</span>
+    <div class="remote-hint" *ngIf="!(remoteConfigService.showCategoryFilter$ | async)">
+      <ion-icon name="layers-outline"></ion-icon>
+      <span>El filtro de categorías está oculto por Remote Config.</span>
     </div>
-    <div class="stat-divider"></div>
-    <div class="stat">
-      <span class="stat-number completed">{{ taskStats.completed }}</span>
-      <span class="stat-label">Completadas</span>
-    </div>
-    <div class="stat-divider"></div>
-    <div class="stat">
-      <span class="stat-number total">{{ taskStats.total }}</span>
-      <span class="stat-label">Total</span>
-    </div>
-  </div>
 
-  <div class="empty-state" *ngIf="filteredTasks.length === 0">
-    <ion-icon name="checkmark-circle-outline"></ion-icon>
-    <h2>Aún no hay tareas</h2>
-    <p>Agrega tu primera tarea hoy.</p>
-  </div>
+    <div class="stats-bar" *ngIf="filteredTasks.length > 0">
+      <div class="stat">
+        <span class="stat-number">{{ taskStats.pending }}</span>
+        <span class="stat-label">Pendientes</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-number completed">{{ taskStats.completed }}</span>
+        <span class="stat-label">Completadas</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-number total">{{ taskStats.total }}</span>
+        <span class="stat-label">Total</span>
+      </div>
+    </div>
 
-  <cdk-virtual-scroll-viewport *ngIf="filteredTasks.length > 0" itemSize="92" class="task-viewport">
-    <app-task-item
-      *cdkVirtualFor="let task of filteredTasks; trackBy: trackByTaskId"
-      [task]="task"
-      [categoryName]="getCategoryName(task.categoryId)"
-      [categoryColor]="getCategoryColor(task.categoryId)"
-      (toggleTask)="toggleTask($event)"
-      (deleteTask)="deleteTask($event)">
-    </app-task-item>
-  </cdk-virtual-scroll-viewport>
+    <div class="empty-state" *ngIf="filteredTasks.length === 0">
+      <ion-icon name="checkmark-circle-outline"></ion-icon>
+      <h2>Aún no hay tareas</h2>
+      <p>Agrega tu primera tarea hoy.</p>
+    </div>
+
+    <cdk-virtual-scroll-viewport *ngIf="filteredTasks.length > 0" itemSize="92" class="task-viewport">
+      <app-task-item
+        *cdkVirtualFor="let task of filteredTasks; trackBy: trackByTaskId"
+        [task]="task"
+        [categoryName]="getCategoryName(task.categoryId)"
+        [categoryColor]="getCategoryColor(task.categoryId)"
+        (toggleTask)="toggleTask($event)"
+        (deleteTask)="deleteTask($event)">
+      </app-task-item>
+    </cdk-virtual-scroll-viewport>
+
+  </div>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="remoteConfigService.enableFloatingAdd$ | async">
     <ion-fab-button (click)="openAddModal()">
@@ -90,25 +94,19 @@
         <ion-item>
           <ion-input label="Título" labelPlacement="floating" [(ngModel)]="newTaskTitle" placeholder="Ej: Comprar leche"></ion-input>
         </ion-item>
-        
         <ion-item>
           <ion-textarea label="Descripción" labelPlacement="floating" [(ngModel)]="newTaskDescription" placeholder="(Opcional)"></ion-textarea>
         </ion-item>
-
         <ion-item>
           <ion-select label="Categoría" labelPlacement="floating" [(ngModel)]="newTaskCategoryId" placeholder="Sin categoría">
             <ion-select-option value="">Ninguna</ion-select-option>
-            <ion-select-option *ngFor="let cat of categories" [value]="cat.id">
-              {{ cat.name }}
-            </ion-select-option>
+            <ion-select-option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</ion-select-option>
           </ion-select>
         </ion-item>
-
         <ion-button expand="block" class="ion-margin-top" (click)="confirmAdd()" [disabled]="!newTaskTitle.trim()">
           Agregar Tarea
         </ion-button>
       </ion-content>
     </ng-template>
   </ion-modal>
-
 </ion-content>
