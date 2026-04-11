@@ -16,8 +16,10 @@ export class AppComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await this.storageService.init();
-    await this.remoteConfigService.initialize();
     await this.taskService.loadCategories();
     await this.taskService.loadTasks();
+    setTimeout(() => {
+      void this.remoteConfigService.initialize();
+    }, 0);
   }
 }

@@ -10,8 +10,8 @@
 </ion-header>
 
 <ion-content>
-  <ion-list *ngIf="categories.length > 0" lines="none" class="ion-padding-top">
-    <ion-item-sliding *ngFor="let cat of categories">
+  <cdk-virtual-scroll-viewport *ngIf="categories.length > 0" itemSize="72" class="category-viewport ion-padding-top">
+    <ion-item-sliding *cdkVirtualFor="let cat of categories; trackBy: trackByCategoryId">
       <ion-item>
         <div *ngIf="showCategoryColors" slot="start" class="color-dot" [style.background-color]="cat.color"></div>
         <ion-label>
@@ -28,7 +28,7 @@
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
-  </ion-list>
+  </cdk-virtual-scroll-viewport>
 
   <div class="empty-state" *ngIf="categories.length === 0">
     <ion-icon name="folder-open-outline"></ion-icon>

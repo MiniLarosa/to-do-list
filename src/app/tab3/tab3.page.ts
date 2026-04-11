@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FirebaseRemoteConfigService } from '../services/firebase-remote-config.service';
 
 @Component({
@@ -6,6 +6,7 @@ import { FirebaseRemoteConfigService } from '../services/firebase-remote-config.
   templateUrl: 'tab3.page.html',
   styleUrls: ['tab3.page.scss'],
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Tab3Page {
   public remoteConfigService = inject(FirebaseRemoteConfigService);

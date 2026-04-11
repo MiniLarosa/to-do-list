@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Category } from '../models/task.model';
@@ -11,11 +11,13 @@ import { FirebaseRemoteConfigService } from '../services/firebase-remote-config.
   templateUrl: 'tab2.page.html',
   styleUrls: ['tab2.page.scss'],
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Tab2Page implements OnInit, OnDestroy {
   private taskService = inject(TaskService);
   private alertCtrl = inject(AlertController);
   private remoteConfigService = inject(FirebaseRemoteConfigService);
+  private cdr = inject(ChangeDetectorRef);
 
   categories: Category[] = [];
   private destroy$ = new Subject<void>();
@@ -32,11 +34,17 @@ export class Tab2Page implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.taskService.categories$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(cats => (this.categories = cats));
+      .subscribe(cats => {
+        this.categories = cats;
+        this.cdr.markForCheck();
+      });
 
     this.remoteConfigService.showCategoryColors$
       .pipe(takeUntil(this.destroy$))
-      .subscribe((show: boolean) => (this.showCategoryColors = show));
+      .subscribe((show: boolean) => {
+        this.showCategoryColors = show;
+        this.cdr.markForCheck();
+      });
   }
 
   ngOnDestroy(): void {
@@ -88,5 +96,9 @@ export class Tab2Page implements OnInit, OnDestroy {
       ]
     });
     await alert.present();
+  }
+
+  trackByCategoryId(_index: number, category: Category): string {
+    return category.id;
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Task, Category } from '../models/task.model';
@@ -10,13 +10,18 @@ import { FirebaseRemoteConfigService } from '../services/firebase-remote-config.
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Tab1Page implements OnInit, OnDestroy {
   private taskService = inject(TaskService);
   public remoteConfigService = inject(FirebaseRemoteConfigService);
+  private cdr = inject(ChangeDetectorRef);
 
   tasks: Task[] = [];
   categories: Category[] = [];
+  filteredTasks: Task[] = [];
+  taskStats = { total: 0, pending: 0, completed: 0 };
+  private categoryMap = new Map<string, Category>();
   private destroy$ = new Subject<void>();
 
   selectedCategoryId: string = 'all';
@@ -29,11 +34,18 @@ export class Tab1Page implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.taskService.tasks$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(tasks => (this.tasks = tasks));
+      .subscribe(tasks => {
+        this.tasks = tasks;
+        this.applyFilters();
+      });
 
     this.taskService.categories$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(categories => (this.categories = categories));
+      .subscribe(categories => {
+        this.categories = categories;
+        this.categoryMap = new Map(categories.map(category => [category.id, category]));
+        this.applyFilters();
+      });
   }
 
   ngOnDestroy(): void {
@@ -45,11 +57,8 @@ export class Tab1Page implements OnInit, OnDestroy {
     return task.id;
   }
 
-  get filteredTasks(): Task[] {
-    if (this.selectedCategoryId === 'all') {
-      return this.tasks;
-    }
-    return this.tasks.filter(t => t.categoryId === this.selectedCategoryId);
+  trackByCategoryId(_index: number, category: Category): string {
+    return category.id;
   }
 
   openAddModal(): void {
@@ -70,6 +79,10 @@ export class Tab1Page implements OnInit, OnDestroy {
     }
   }
 
+  onCategoryChange(): void {
+    this.applyFilters();
+  }
+
   private resetForm(): void {
     this.newTaskTitle = '';
     this.newTaskDescription = '';
@@ -84,23 +97,30 @@ export class Tab1Page implements OnInit, OnDestroy {
     await this.taskService.deleteTask(task.id);
   }
 
-  get pendingCount(): number {
-    return this.filteredTasks.filter(t => !t.completed).length;
-  }
-
-  get completedCount(): number {
-    return this.filteredTasks.filter(t => t.completed).length;
-  }
-
   getCategoryColor(categoryId?: string): string {
     if (!categoryId) return 'medium';
-    const cat = this.categories.find(c => c.id === categoryId);
+    const cat = this.categoryMap.get(categoryId);
     return cat ? cat.color : 'medium';
   }
 
   getCategoryName(categoryId?: string): string {
     if (!categoryId) return 'Sin categoría';
-    const cat = this.categories.find(c => c.id === categoryId);
+    const cat = this.categoryMap.get(categoryId);
     return cat ? cat.name : 'Desconocida';
+  }
+
+  private applyFilters(): void {
+    this.filteredTasks = this.selectedCategoryId === 'all'
+      ? this.tasks
+      : this.tasks.filter(task => task.categoryId === this.selectedCategoryId);
+
+    const completed = this.filteredTasks.filter(task => task.completed).length;
+    this.taskStats = {
+      total: this.filteredTasks.length,
+      completed,
+      pending: this.filteredTasks.length - completed
+    };
+
+    this.cdr.markForCheck();
   }
 }

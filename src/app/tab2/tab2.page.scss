@@ -26,6 +26,12 @@
   }
 }
 
+.category-viewport {
+  height: calc(100dvh - 220px);
+  min-height: 280px;
+  width: 100%;
+}
+
 .color-dot {
   width: 16px;
   height: 16px;

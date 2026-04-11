@@ -2,6 +2,7 @@ import { IonicModule } from '@ionic/angular';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 import { Tab2Page } from './tab2.page';
 
 import { Tab2PageRoutingModule } from './tab2-routing.module';
@@ -11,6 +12,7 @@ import { Tab2PageRoutingModule } from './tab2-routing.module';
     IonicModule,
     CommonModule,
     FormsModule,
+    ScrollingModule,
     Tab2PageRoutingModule
   ],
   declarations: [Tab2Page]
