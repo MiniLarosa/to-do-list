@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Mis Tareas</ion-title>
-    <ion-buttons slot="end">
+    <ion-buttons slot="end" *ngIf="!(remoteConfigService.enableFloatingAdd$ | async)">
       <ion-button (click)="openAddModal()" id="add-task-btn">
         <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
       </ion-button>
@@ -11,7 +11,18 @@
 
 <ion-content>
 
-  <ion-segment [(ngModel)]="selectedCategoryId" scrollable="true" class="ion-margin-vertical">
+  <ion-card class="welcome-banner" *ngIf="remoteConfigService.showWelcomeBanner$ | async">
+    <ion-card-header>
+      <ion-badge color="light">Banner remoto activo</ion-badge>
+      <ion-title>¡Hola Sebastian!</ion-title>
+    </ion-card-header>
+    <ion-card-content>
+      Usaste Firebase Remote Config para activar este banner en tiempo real. Se puede apagar desde Firebase sin publicar una nueva versión.
+    </ion-card-content>
+  </ion-card>
+
+  <ion-segment *ngIf="remoteConfigService.showCategoryFilter$ | async" 
+               [(ngModel)]="selectedCategoryId" scrollable="true" class="ion-margin-vertical">
     <ion-segment-button value="all">
       <ion-label>Todas</ion-label>
     </ion-segment-button>
@@ -19,6 +30,11 @@
       <ion-label>{{ cat.name }}</ion-label>
     </ion-segment-button>
   </ion-segment>
+
+  <div class="remote-hint" *ngIf="!(remoteConfigService.showCategoryFilter$ | async)">
+    <ion-icon name="layers-outline"></ion-icon>
+    <span>El filtro de categorías está oculto por Remote Config.</span>
+  </div>
 
   <div class="stats-bar" *ngIf="filteredTasks.length > 0">
     <div class="stat">
@@ -40,7 +56,7 @@
   <div class="empty-state" *ngIf="filteredTasks.length === 0">
     <ion-icon name="checkmark-circle-outline"></ion-icon>
     <h2>Aún no hay tareas</h2>
-    <p>Presiona el botón <strong>+</strong> para agregar tu primera tarea.</p>
+    <p>Agrega tu primera tarea hoy.</p>
   </div>
 
   <ion-list *ngIf="filteredTasks.length > 0" lines="none">
@@ -70,6 +86,12 @@
 
     </ion-item-sliding>
   </ion-list>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="remoteConfigService.enableFloatingAdd$ | async">
+    <ion-fab-button (click)="openAddModal()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 
   <ion-modal [isOpen]="isAddModalOpen" (didDismiss)="cancelAdd()">
     <ng-template>

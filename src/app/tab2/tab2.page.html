@@ -13,7 +13,7 @@
   <ion-list *ngIf="categories.length > 0" lines="none" class="ion-padding-top">
     <ion-item-sliding *ngFor="let cat of categories">
       <ion-item>
-        <div slot="start" class="color-dot" [style.background-color]="cat.color"></div>
+        <div *ngIf="showCategoryColors" slot="start" class="color-dot" [style.background-color]="cat.color"></div>
         <ion-label>
           <h2>{{ cat.name }}</h2>
         </ion-label>

@@ -1,17 +1,106 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Tab 3
-    </ion-title>
+    <ion-title>Flags</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" class="flags-page">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
+      <ion-title size="large">Flags</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+  <ion-card class="flags-hero">
+    <ion-card-header>
+      <div class="hero-kicker">
+        <span class="hero-eyebrow">Remote Config</span>
+        <ion-badge color="success">Live</ion-badge>
+      </div>
+      <ion-card-title>{{ activeFeatureFlagsCount }} de 3 flags activas</ion-card-title>
+      <ion-card-subtitle>Panel de control para activar o apagar funciones al vuelo</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      <div class="hero-metrics">
+        <div class="metric">
+          <span class="metric-value">{{ activeFeatureFlagsCount }}</span>
+          <span class="metric-label">Activas</span>
+        </div>
+        <div class="metric">
+          <span class="metric-value">3</span>
+          <span class="metric-label">Totales</span>
+        </div>
+        <div class="metric">
+          <span class="metric-value">Live</span>
+          <span class="metric-label">Estado</span>
+        </div>
+      </div>
+
+      <ion-progress-bar [value]="activeFeatureFlagsCount / 3" color="success"></ion-progress-bar>
+
+      <ion-button expand="block" class="refresh-button" [disabled]="isRefreshing" (click)="refreshRemoteConfig()">
+        <ion-spinner *ngIf="isRefreshing" name="crescent" slot="start"></ion-spinner>
+        <ion-icon *ngIf="!isRefreshing" slot="start" name="sync-outline"></ion-icon>
+        {{ isRefreshing ? 'Actualizando...' : 'Refrescar Firebase' }}
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card class="flag-card flag-card--banner" [class.flag-card--on]="remoteConfigService.showWelcomeBanner$ | async">
+    <ion-card-header>
+      <div class="flag-row">
+        <div class="flag-icon flag-icon--banner">
+          <ion-icon name="sparkles-outline"></ion-icon>
+        </div>
+        <div>
+          <ion-card-title>show_welcome_banner</ion-card-title>
+          <ion-card-subtitle>Hero / bienvenida en Tab1</ion-card-subtitle>
+        </div>
+        <ion-badge [color]="(remoteConfigService.showWelcomeBanner$ | async) ? 'success' : 'medium'">
+          {{ (remoteConfigService.showWelcomeBanner$ | async) ? 'ON' : 'OFF' }}
+        </ion-badge>
+      </div>
+    </ion-card-header>
+  </ion-card>
+
+  <ion-card class="flag-card flag-card--filter" [class.flag-card--on]="remoteConfigService.showCategoryFilter$ | async">
+    <ion-card-header>
+      <div class="flag-row">
+        <div class="flag-icon flag-icon--filter">
+          <ion-icon name="filter-outline"></ion-icon>
+        </div>
+        <div>
+          <ion-card-title>show_category_filter</ion-card-title>
+          <ion-card-subtitle>Segmento de categorías en Tab1</ion-card-subtitle>
+        </div>
+        <ion-badge [color]="(remoteConfigService.showCategoryFilter$ | async) ? 'success' : 'medium'">
+          {{ (remoteConfigService.showCategoryFilter$ | async) ? 'ON' : 'OFF' }}
+        </ion-badge>
+      </div>
+    </ion-card-header>
+  </ion-card>
+
+  <ion-card class="flag-card flag-card--fab" [class.flag-card--on]="remoteConfigService.enableFloatingAdd$ | async">
+    <ion-card-header>
+      <div class="flag-row">
+        <div class="flag-icon flag-icon--fab">
+          <ion-icon name="add-circle-outline"></ion-icon>
+        </div>
+        <div>
+          <ion-card-title>enable_floating_add</ion-card-title>
+          <ion-card-subtitle>FAB para alta rápida de tareas</ion-card-subtitle>
+        </div>
+        <ion-badge [color]="(remoteConfigService.enableFloatingAdd$ | async) ? 'success' : 'medium'">
+          {{ (remoteConfigService.enableFloatingAdd$ | async) ? 'ON' : 'OFF' }}
+        </ion-badge>
+      </div>
+    </ion-card-header>
+  </ion-card>
+
+  <ion-card class="flags-footer">
+    <ion-card-content>
+      Cambia un valor en Firebase, publica y pulsa refrescar en el hero para ver el resultado.
+    </ion-card-content>
+  </ion-card>
 </ion-content>

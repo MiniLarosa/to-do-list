@@ -4,6 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Category } from '../models/task.model';
 import { TaskService } from '../services/task.service';
 import { AlertController } from '@ionic/angular';
+import { FirebaseRemoteConfigService } from '../services/firebase-remote-config.service';
 
 @Component({
   selector: 'app-tab2',
@@ -14,9 +15,12 @@ import { AlertController } from '@ionic/angular';
 export class Tab2Page implements OnInit, OnDestroy {
   private taskService = inject(TaskService);
   private alertCtrl = inject(AlertController);
+  private remoteConfigService = inject(FirebaseRemoteConfigService);
 
   categories: Category[] = [];
   private destroy$ = new Subject<void>();
+
+  showCategoryColors: boolean = true;
 
   isModalOpen = false;
   editingCategoryId: string | null = null;
@@ -29,6 +33,10 @@ export class Tab2Page implements OnInit, OnDestroy {
     this.taskService.categories$
       .pipe(takeUntil(this.destroy$))
       .subscribe(cats => (this.categories = cats));
+
+    this.remoteConfigService.showCategoryColors$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((show: boolean) => (this.showCategoryColors = show));
   }
 
   ngOnDestroy(): void {

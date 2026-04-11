@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Task, Category } from '../models/task.model';
 import { TaskService } from '../services/task.service';
+import { FirebaseRemoteConfigService } from '../services/firebase-remote-config.service';
 
 @Component({
   selector: 'app-tab1',
@@ -12,6 +13,7 @@ import { TaskService } from '../services/task.service';
 })
 export class Tab1Page implements OnInit, OnDestroy {
   private taskService = inject(TaskService);
+  public remoteConfigService = inject(FirebaseRemoteConfigService);
 
   tasks: Task[] = [];
   categories: Category[] = [];
