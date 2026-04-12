@@ -1,0 +1,120 @@
+.flags-page {
+  --padding-bottom: calc(92px + env(safe-area-inset-bottom));
+}
+
+.flags-hero {
+  background:
+    radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.18), transparent 18%),
+    radial-gradient(circle at 82% 10%, rgba(255, 255, 255, 0.12), transparent 14%),
+    linear-gradient(135deg, #0f172a 0%, #1d4ed8 55%, #7c3aed 100%);
+  overflow: hidden;
+
+  ion-badge {
+    width: fit-content;
+  }
+
+  ion-card-title {
+    margin-top: 10px;
+    font-size: 1.45rem;
+    font-weight: 800;
+  }
+
+  ion-card-subtitle {
+    color: rgba(255, 255, 255, 0.82);
+  }
+}
+
+.hero-kicker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.hero-eyebrow {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.hero-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 14px 0 16px;
+}
+
+.metric {
+  padding: 12px 10px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+.metric-value {
+  display: block;
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.metric-label {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.refresh-button {
+  margin-top: 16px;
+  --border-radius: 14px;
+  --box-shadow: none;
+  --background: rgba(255, 255, 255, 0.16);
+  --background-hover: rgba(255, 255, 255, 0.22);
+  --color: #fff;
+}
+
+.flag-card {
+  margin: 0 12px 12px;
+  border: 1px solid rgba(var(--ion-color-medium-rgb), 0.12);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #0f172a, #1e293b);
+
+  &.flag-card--on {
+    border-color: rgba(var(--ion-color-success-rgb), 0.3);
+    background: linear-gradient(90deg, rgba(var(--ion-color-success-rgb), 0.08), rgba(var(--ion-color-success-rgb), 0.03));
+  }
+}
+
+.flag-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  div {
+    flex: 1;
+  }
+
+  ion-card-title {
+    font-size: 1rem;
+    font-weight: 800;
+  }
+
+  ion-card-subtitle {
+    margin-top: 3px;
+  }
+}
+
+.flags-footer {
+  margin: 4px 12px 14px !important;
+  border: 1px dashed rgba(var(--ion-color-medium-rgb), 0.28) !important;
+  border-radius: 18px;
+  background: rgba(var(--ion-color-medium-rgb), 0.05) !important;
+  color: var(--ion-color-medium-shade);
+}

@@ -1,62 +1,130 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Mis Tareas</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="openAddTaskDialog()" id="add-task-btn">
-        <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+<ion-content class="unified-page">
+  <div class="page-shell">
+
+    <div class="page-title-bar">
+      <span class="page-title-text">Mis Tareas</span>
+      <ion-button *ngIf="(remoteConfigService.enableFloatingAdd$ | async) === false"
+        fill="clear" class="page-title-btn" (click)="openAddModal()">
+        <ion-icon slot="icon-only" name="add-outline"></ion-icon>
       </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+    </div>
 
-<ion-content>
+    <ion-card class="page-hero-card flags-like-hero welcome-banner" *ngIf="remoteConfigService.showWelcomeBanner$ | async">
+      <ion-card-header>
+        <div class="hero-kicker">
+          <span class="hero-eyebrow">Remote Config</span>
+        </div>
+        <ion-card-title>¡Hola Sebastian!</ion-card-title>
+        <ion-card-subtitle>Tu tablero diario para avanzar pendiente por pendiente</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        Usaste Firebase Remote Config para activar este banner.
+      </ion-card-content>
+    </ion-card>
 
-  <div class="stats-bar" *ngIf="tasks.length > 0">
-    <div class="stat">
-      <span class="stat-number">{{ pendingCount }}</span>
-      <span class="stat-label">Pendientes</span>
+    <ion-segment *ngIf="remoteConfigService.showCategoryFilter$ | async"
+                 [(ngModel)]="selectedCategoryId" (ionChange)="onCategoryChange()"
+                 scrollable="true" class="flags-like-segment ion-margin-vertical">
+      <ion-segment-button value="all">
+        <ion-label>Todas</ion-label>
+      </ion-segment-button>
+      <ion-segment-button *ngFor="let cat of categories; trackBy: trackByCategoryId" [value]="cat.id">
+        <ion-label>{{ cat.name }}</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
+    <div class="page-inline-hint remote-hint" *ngIf="(remoteConfigService.showCategoryFilter$ | async) === false">
+      <ion-icon name="layers-outline"></ion-icon>
+      <span>El filtro de categorías está oculto por Remote Config.</span>
     </div>
-    <div class="stat-divider"></div>
-    <div class="stat">
-      <span class="stat-number completed">{{ completedCount }}</span>
-      <span class="stat-label">Completadas</span>
+
+    <div class="page-stats-bar stats-bar" *ngIf="filteredTasks.length > 0">
+      <div class="stat stat-pending">
+        <ion-icon name="time-outline"></ion-icon>
+        <span class="stat-number">{{ taskStats.pending }}</span>
+        <span class="stat-label">Pendientes</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat stat-completed">
+        <ion-icon name="checkmark-done-outline"></ion-icon>
+        <span class="stat-number completed">{{ taskStats.completed }}</span>
+        <span class="stat-label">Completadas</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat stat-total">
+        <ion-icon name="layers-outline"></ion-icon>
+        <span class="stat-number total">{{ taskStats.total }}</span>
+        <span class="stat-label">Total</span>
+      </div>
     </div>
-    <div class="stat-divider"></div>
-    <div class="stat">
-      <span class="stat-number total">{{ tasks.length }}</span>
-      <span class="stat-label">Total</span>
+
+    <div class="page-empty-state empty-state" *ngIf="filteredTasks.length === 0">
+      <ion-icon name="checkmark-circle-outline"></ion-icon>
+      <h2>Aún no hay tareas</h2>
+      <p>Agrega tu primera tarea hoy.</p>
     </div>
+
+    <cdk-virtual-scroll-viewport
+    *ngIf="filteredTasks.length > 0"
+    itemSize="100"
+    class="page-viewport task-viewport">    
+      <app-task-item
+        *cdkVirtualFor="let task of filteredTasks; trackBy: trackByTaskId"
+        [task]="task"
+        [categoryName]="getCategoryName(task.categoryId)"
+        [categoryColor]="getCategoryColor(task.categoryId)"
+        (toggleTask)="toggleTask($event)"
+        (deleteTask)="deleteTask($event)"
+        (slideOpen)="onSlideOpen()"
+        (slideClose)="onSlideClose()">
+      </app-task-item>
+    </cdk-virtual-scroll-viewport>
+
   </div>
 
-  <div class="empty-state" *ngIf="tasks.length === 0">
-    <ion-icon name="checkmark-circle-outline"></ion-icon>
-    <h2>Aún no hay tareas</h2>
-    <p>Presiona el botón <strong>+</strong> para agregar tu primera tarea.</p>
-  </div>
+  <ion-fab
+    class="task-fab"
+    vertical="bottom"
+    horizontal="end"
+    slot="fixed"
+    *ngIf="remoteConfigService.enableFloatingAdd$ | async">
+    <ion-fab-button
+      (click)="openAddModal()"
+      [class.fab-hidden]="!isFabVisible">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 
-  <ion-list *ngIf="tasks.length > 0" lines="none">
-    <ion-item-sliding *ngFor="let task of tasks; trackBy: trackByTaskId" [id]="'task-' + task.id">
-
-      <ion-item [class.completed-item]="task.completed" button (click)="toggleTask(task)">
-        <ion-checkbox
-          slot="start"
-          [checked]="task.completed"
-          (ionChange)="toggleTask(task)"
-          (click)="$event.stopPropagation()">
-        </ion-checkbox>
-        <ion-label>
-          <h2 [class.strike]="task.completed">{{ task.title }}</h2>
-          <p *ngIf="task.description">{{ task.description }}</p>
-        </ion-label>
-      </ion-item>
-
-      <ion-item-options side="end">
-        <ion-item-option color="danger" (click)="deleteTask(task)" [id]="'delete-' + task.id">
-          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-        </ion-item-option>
-      </ion-item-options>
-
-    </ion-item-sliding>
-  </ion-list>
-
+  <ion-modal class="app-modal" [isOpen]="isAddModalOpen" (didDismiss)="cancelAdd()">
+    <ng-template>
+      <ion-content class="app-modal-content">
+        <div class="page-title-bar">
+          <span class="page-title-text">Nueva Tarea</span>
+          <ion-button fill="clear" class="page-title-btn" (click)="cancelAdd()">CERRAR</ion-button>
+        </div>
+        <div class="app-modal-body app-modal-form">
+          <ion-item class="app-modal-field">
+            <ion-input label="Título" labelPlacement="floating" [(ngModel)]="newTaskTitle" placeholder="Ej: Comprar leche"></ion-input>
+          </ion-item>
+          <ion-item class="app-modal-field">
+            <ion-textarea label="Descripción" labelPlacement="floating" [(ngModel)]="newTaskDescription" placeholder="(Opcional)"></ion-textarea>
+          </ion-item>
+          <ion-select
+            class="app-modal-select"
+            interface="popover"
+            fill="outline"
+            label="Categoría"
+            labelPlacement="stacked"
+            [(ngModel)]="newTaskCategoryId"
+            placeholder="Sin categoría">
+            <ion-select-option value="">Ninguna</ion-select-option>
+            <ion-select-option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</ion-select-option>
+          </ion-select>
+          <ion-button expand="block" class="ion-margin-top app-modal-submit" (click)="confirmAdd()" [disabled]="!newTaskTitle.trim()">
+            Agregar Tarea
+          </ion-button>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-content>

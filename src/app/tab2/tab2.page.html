@@ -1,13 +1,77 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Categorías</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content class="unified-page">
+  <div class="page-shell">
 
-<ion-content class="ion-padding">
-  <div class="coming-soon">
-    <ion-icon name="folder-outline"></ion-icon>
-    <h2>Categorías</h2>
-    <p>Administración de categorías próximamente.</p>
+    <div class="page-title-bar">
+      <span class="page-title-text">Categorías</span>
+      <ion-button fill="clear" class="page-title-btn" (click)="openModal()">
+        <ion-icon slot="icon-only" name="add-outline"></ion-icon>
+      </ion-button>
+    </div>
+
+    <ion-card class="page-hero-card flags-like-hero categories-hero">
+      <ion-card-header>
+        <ion-card-title>{{ categories.length }} categorías</ion-card-title>
+        <ion-card-subtitle>Organiza tus tareas con un estilo consistente</ion-card-subtitle>
+      </ion-card-header>
+    </ion-card>
+
+    <cdk-virtual-scroll-viewport *ngIf="categories.length > 0" itemSize="86" [minBufferPx]="600" [maxBufferPx]="900" class="page-viewport category-viewport">
+      <div class="category-row" *cdkVirtualFor="let cat of categories; trackBy: trackByCategoryId">
+        <ion-item-sliding>
+          <ion-item class="category-card">
+            <div *ngIf="showCategoryColors" slot="start" class="color-dot" [style.background-color]="cat.color"></div>
+            <ion-label>
+              <h2>{{ cat.name }}</h2>
+            </ion-label>
+            <ion-button fill="clear" color="medium" slot="end" (click)="openModal(cat)">
+              <ion-icon name="create-outline"></ion-icon>
+            </ion-button>
+          </ion-item>
+
+          <ion-item-options side="end">
+            <ion-item-option color="danger" (click)="deleteCategory(cat)">
+              <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+            </ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
+      </div>
+    </cdk-virtual-scroll-viewport>
+
+    <div class="page-empty-state empty-state" *ngIf="categories.length === 0">
+      <ion-icon name="folder-open-outline"></ion-icon>
+      <h2>Sin categorías</h2>
+      <p>Presiona el botón <strong>+</strong> para crear una.</p>
+    </div>
+
   </div>
+
+  <ion-modal class="app-modal" [isOpen]="isModalOpen" (didDismiss)="cancelModal()">
+    <ng-template>
+      <ion-content class="app-modal-content">
+        <div class="page-title-bar">
+          <span class="page-title-text">{{ editingCategoryId ? 'Editar' : 'Nueva' }} Categoría</span>
+          <ion-button fill="clear" class="page-title-btn" (click)="cancelModal()">CERRAR</ion-button>
+        </div>
+        <div class="app-modal-body app-modal-form">
+          <ion-item class="app-modal-field">
+            <ion-input label="Nombre" labelPlacement="floating" [(ngModel)]="categoryName" placeholder="Ej: Universidad"></ion-input>
+          </ion-item>
+          <ion-item lines="none" class="ion-margin-top app-modal-color-label">
+            <ion-label>Color</ion-label>
+          </ion-item>
+          <div class="color-picker ion-padding-horizontal">
+            <div *ngFor="let c of availableColors"
+                 class="color-option"
+                 [style.background-color]="c"
+                 [class.selected]="categoryColor === c"
+                 (click)="categoryColor = c">
+            </div>
+          </div>
+          <ion-button expand="block" class="ion-margin-top app-modal-submit" (click)="saveCategory()" [disabled]="!categoryName.trim()">
+            Guardar Categoría
+          </ion-button>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-content>

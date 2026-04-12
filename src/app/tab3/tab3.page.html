@@ -1,17 +1,65 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 3
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content class="unified-page flags-page">
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div class="page-title-bar">
+    <span class="page-title-text">Flags</span>
+  </div>
 
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+  <ion-card class="page-hero-card flags-hero">
+    <ion-card-header>
+      <div class="hero-kicker">
+        <span class="hero-eyebrow">Remote Config</span>
+      </div>
+      <ion-card-title>{{ activeFeatureFlagsCount }} de {{ totalFeatureFlagsCount }} flags activas</ion-card-title>
+      <ion-card-subtitle>Panel de control para activar o apagar funciones al vuelo</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      <div class="hero-metrics">
+        <div class="metric">
+          <span class="metric-value">{{ activeFeatureFlagsCount }}</span>
+          <span class="metric-label">Activas</span>
+        </div>
+        <div class="metric">
+          <span class="metric-value">{{ totalFeatureFlagsCount }}</span>
+          <span class="metric-label">Totales</span>
+        </div>
+        <div class="metric">
+          <span class="metric-value">Live</span>
+          <span class="metric-label">Estado</span>
+        </div>
+      </div>
+
+      <ion-progress-bar [value]="flagsProgress" color="success"></ion-progress-bar>
+
+      <ion-button expand="block" class="refresh-button" [disabled]="isRefreshing" (click)="refreshRemoteConfig()">
+        <ion-spinner *ngIf="isRefreshing" name="crescent" slot="start"></ion-spinner>
+        <ion-icon *ngIf="!isRefreshing" slot="start" name="sync-outline"></ion-icon>
+        {{ isRefreshing ? 'Actualizando...' : 'Refrescar Firebase' }}
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card
+    class="flag-card"
+    *ngFor="let flag of flags; trackBy: trackByFlagKey"
+    [class.flag-card--on]="flag.value$ | async">
+    <ion-card-header>
+      <div class="flag-row">
+        <div>
+          <ion-card-title>{{ flag.key }}</ion-card-title>
+          <ion-card-subtitle>{{ flag.description }}</ion-card-subtitle>
+        </div>
+        <ion-badge [color]="(flag.value$ | async) ? 'success' : 'medium'">
+          {{ (flag.value$ | async) ? 'ON' : 'OFF' }}
+        </ion-badge>
+      </div>
+    </ion-card-header>
+  </ion-card>
+
+  <ion-card class="page-inline-hint flags-footer">
+    <ion-card-content>
+      Cambia un valor en Firebase, publica y pulsa refrescar en el hero para ver el resultado.
+    </ion-card-content>
+  </ion-card>
+
 </ion-content>
