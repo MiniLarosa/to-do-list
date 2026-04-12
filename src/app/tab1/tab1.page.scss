@@ -26,7 +26,7 @@
 }
 
 .flags-like-segment {
-  margin: 0 12px 12px !important;
+  margin: 12px !important;
   background: rgba(15, 23, 42, 0.74);
   border: 1px solid rgba(148, 163, 184, 0.2);
   border-radius: 14px;
@@ -59,18 +59,23 @@
 }
 
 .task-viewport {
-  padding-bottom: 140px;
+  padding-bottom: 0;
 }
 
 .task-fab {
   right: 12px;
-  bottom: calc(104px + env(safe-area-inset-bottom)) !important;
-  z-index: 20;
 }
 
 .task-fab ion-fab-button {
   --background: linear-gradient(135deg, #2563eb, #4338ca);
   --box-shadow: 0 12px 24px rgba(37, 99, 235, 0.4);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.task-fab ion-fab-button.fab-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.7);
 }
 
 .stats-bar {
@@ -93,28 +98,17 @@
   }
 
   .stat-pending ion-icon,
-  .stat-pending .stat-number {
-    color: #f59e0b;
-  }
+  .stat-pending .stat-number { color: #f59e0b; }
 
   .stat-completed ion-icon,
-  .stat-completed .stat-number {
-    color: #10b981;
-  }
+  .stat-completed .stat-number { color: #10b981; }
 
   .stat-total ion-icon,
-  .stat-total .stat-number {
-    color: #2563eb;
-  }
+  .stat-total .stat-number { color: #2563eb; }
 
   .stat-number {
-    &.completed {
-      color: #10b981;
-    }
-
-    &.total {
-      color: #2563eb;
-    }
+    &.completed { color: #10b981; }
+    &.total { color: #2563eb; }
   }
 
   .stat-label {

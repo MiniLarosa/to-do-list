@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, OnDestroy, ViewChild, inject } from '@angular/core';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Task, Category } from '../models/task.model';
@@ -13,6 +14,8 @@ import { FirebaseRemoteConfigService } from '../services/firebase-remote-config.
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Tab1Page implements OnInit, OnDestroy {
+  @ViewChild(CdkVirtualScrollViewport) viewport!: CdkVirtualScrollViewport;
+
   private taskService = inject(TaskService);
   public remoteConfigService = inject(FirebaseRemoteConfigService);
   private cdr = inject(ChangeDetectorRef);
@@ -25,8 +28,8 @@ export class Tab1Page implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   selectedCategoryId: string = 'all';
-
   isAddModalOpen = false;
+  isFabVisible = true;
   newTaskTitle = '';
   newTaskDescription = '';
   newTaskCategoryId = '';
@@ -43,7 +46,7 @@ export class Tab1Page implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(categories => {
         this.categories = categories;
-        this.categoryMap = new Map(categories.map(category => [category.id, category]));
+        this.categoryMap = new Map(categories.map(c => [c.id, c]));
         this.applyFilters();
       });
   }
@@ -53,17 +56,20 @@ export class Tab1Page implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  trackByTaskId(_index: number, task: Task): string {
-    return task.id;
+  onSlideOpen(): void {
+    this.isFabVisible = false;
+    this.cdr.markForCheck();
   }
 
-  trackByCategoryId(_index: number, category: Category): string {
-    return category.id;
+  onSlideClose(): void {
+    this.isFabVisible = true;
+    this.cdr.markForCheck();
   }
 
-  openAddModal(): void {
-    this.isAddModalOpen = true;
-  }
+  trackByTaskId(_index: number, task: Task): string { return task.id; }
+  trackByCategoryId(_index: number, category: Category): string { return category.id; }
+
+  openAddModal(): void { this.isAddModalOpen = true; }
 
   cancelAdd(): void {
     this.isAddModalOpen = false;
@@ -79,9 +85,7 @@ export class Tab1Page implements OnInit, OnDestroy {
     }
   }
 
-  onCategoryChange(): void {
-    this.applyFilters();
-  }
+  onCategoryChange(): void { this.applyFilters(); }
 
   private resetForm(): void {
     this.newTaskTitle = '';
@@ -89,43 +93,34 @@ export class Tab1Page implements OnInit, OnDestroy {
     this.newTaskCategoryId = '';
   }
 
-  async toggleTask(task: Task): Promise<void> {
-    await this.taskService.toggleTask(task.id);
-  }
-
+  async toggleTask(task: Task): Promise<void> { await this.taskService.toggleTask(task.id); }
   async deleteTask(task: Task): Promise<void> {
     await this.taskService.deleteTask(task.id);
+    this.isFabVisible = true;
+    this.cdr.markForCheck();
   }
 
   getCategoryColor(categoryId?: string): string {
     if (!categoryId) return 'medium';
-    const cat = this.categoryMap.get(categoryId);
-    return cat ? cat.color : 'medium';
+    return this.categoryMap.get(categoryId)?.color ?? 'medium';
   }
 
   getCategoryName(categoryId?: string): string {
     if (!categoryId) return 'Sin categoría';
-    const cat = this.categoryMap.get(categoryId);
-    return cat ? cat.name : 'Desconocida';
+    return this.categoryMap.get(categoryId)?.name ?? 'Desconocida';
   }
 
   get currentDateDisplay(): string {
-    const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', year: 'numeric' };
-    return new Date().toLocaleDateString('es-ES', options);
+    return new Date().toLocaleDateString('es-ES', { month: 'short', day: 'numeric', year: 'numeric' });
   }
 
   private applyFilters(): void {
     this.filteredTasks = this.selectedCategoryId === 'all'
       ? this.tasks
-      : this.tasks.filter(task => task.categoryId === this.selectedCategoryId);
+      : this.tasks.filter(t => t.categoryId === this.selectedCategoryId);
 
-    const completed = this.filteredTasks.filter(task => task.completed).length;
-    this.taskStats = {
-      total: this.filteredTasks.length,
-      completed,
-      pending: this.filteredTasks.length - completed
-    };
-
+    const completed = this.filteredTasks.filter(t => t.completed).length;
+    this.taskStats = { total: this.filteredTasks.length, completed, pending: this.filteredTasks.length - completed };
     this.cdr.markForCheck();
   }
 }

@@ -3,55 +3,67 @@
   ion-tab-bar.fancy-tab-bar {
     --background: transparent;
     --border: 0;
-    position: absolute;
-    left: 16px;
-    right: 16px;
-    bottom: calc(8px + env(safe-area-inset-bottom));
-    height: 64px;
-    padding: 6px;
-    border-radius: 999px;
+
+    margin: 0;
+    padding: 6px 12px 6px;
+    height: 60px;
+
+    border-radius: 20px 20px 0 0;
     background: linear-gradient(160deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92));
     border: 1px solid rgba(148, 163, 184, 0.22);
+    border-bottom: none;
     box-shadow:
-      0 18px 34px rgba(2, 6, 23, 0.62),
-      inset 0 1px 0 rgba(255, 255, 255, 0.03);
+      0 -4px 24px rgba(2, 6, 23, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);
     display: flex;
-    gap: 4px;
+    gap: 0;
   }
 
   .fancy-tab-button {
-    --color: #94a3b8;
-    --color-selected: #f8fafc;
-    --padding-top: 7px;
-    --padding-bottom: 7px;
+    --color: #64748b;
+    --color-selected: #818cf8;
     --ripple-color: transparent;
-    border-radius: 999px;
+    --background: transparent;
+    --background-focused: transparent;
+    --background-hover: transparent;
+    border-radius: 0;
     margin: 0;
-    min-height: 50px;
+    min-height: 48px;
+    flex: 1;
     transition: all 0.2s ease;
 
     ion-icon {
-      font-size: 1.05rem;
+      font-size: 1.2rem;
+      transition: all 0.2s ease;
     }
 
     ion-label {
       font-size: 0.68rem;
       font-weight: 600;
       letter-spacing: 0.04em;
+      transition: all 0.2s ease;
     }
 
     &.tab-selected {
-      background: linear-gradient(135deg, #312e81, #4338ca);
-      box-shadow:
-        inset 0 0 0 1px rgba(199, 210, 254, 0.28),
-        0 10px 20px rgba(49, 46, 129, 0.42);
-      transform: translateY(-1px);
+      background: transparent;
+      box-shadow: none;
+      transform: none;
+
+      ion-icon {
+        color: #818cf8;
+        filter: drop-shadow(0 0 6px rgba(129, 140, 248, 0.7));
+      }
+
+      ion-label {
+        color: #818cf8;
+        opacity: 1;
+      }
     }
 
     &:not(.tab-selected) {
       ion-label {
-        opacity: 0.82;
+        opacity: 0.6;
       }
     }
   }

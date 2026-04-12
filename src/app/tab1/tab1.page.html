@@ -1,17 +1,14 @@
-<ion-header>
-  <ion-toolbar class="page-toolbar">
-    <ion-title>Mis Tareas</ion-title>
-    <ion-buttons slot="end" *ngIf="(remoteConfigService.enableFloatingAdd$ | async) === false">
-      <ion-button (click)="openAddModal()" id="add-task-btn">
+<ion-content class="unified-page">
+  <div class="page-shell">
+
+    <div class="page-title-bar">
+      <span class="page-title-text">Mis Tareas</span>
+      <ion-button *ngIf="(remoteConfigService.enableFloatingAdd$ | async) === false"
+        fill="clear" class="page-title-btn" (click)="openAddModal()">
         <ion-icon slot="icon-only" name="add-outline"></ion-icon>
       </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+    </div>
 
-<ion-content [fullscreen]="true" class="unified-page">
-  <div class="page-shell">
-    
     <ion-card class="page-hero-card flags-like-hero welcome-banner" *ngIf="remoteConfigService.showWelcomeBanner$ | async">
       <ion-card-header>
         <div class="hero-kicker">
@@ -25,8 +22,8 @@
       </ion-card-content>
     </ion-card>
 
-    <ion-segment *ngIf="remoteConfigService.showCategoryFilter$ | async" 
-                 [(ngModel)]="selectedCategoryId" (ionChange)="onCategoryChange()" 
+    <ion-segment *ngIf="remoteConfigService.showCategoryFilter$ | async"
+                 [(ngModel)]="selectedCategoryId" (ionChange)="onCategoryChange()"
                  scrollable="true" class="flags-like-segment ion-margin-vertical">
       <ion-segment-button value="all">
         <ion-label>Todas</ion-label>
@@ -67,42 +64,50 @@
       <p>Agrega tu primera tarea hoy.</p>
     </div>
 
-    <cdk-virtual-scroll-viewport *ngIf="filteredTasks.length > 0" itemSize="90" class="page-viewport task-viewport">
+    <cdk-virtual-scroll-viewport
+    *ngIf="filteredTasks.length > 0"
+    itemSize="100"
+    class="page-viewport task-viewport">    
       <app-task-item
         *cdkVirtualFor="let task of filteredTasks; trackBy: trackByTaskId"
         [task]="task"
         [categoryName]="getCategoryName(task.categoryId)"
         [categoryColor]="getCategoryColor(task.categoryId)"
         (toggleTask)="toggleTask($event)"
-        (deleteTask)="deleteTask($event)">
+        (deleteTask)="deleteTask($event)"
+        (slideOpen)="onSlideOpen()"
+        (slideClose)="onSlideClose()">
       </app-task-item>
     </cdk-virtual-scroll-viewport>
 
   </div>
 
-  <ion-fab class="task-fab" vertical="bottom" horizontal="end" slot="fixed" *ngIf="remoteConfigService.enableFloatingAdd$ | async">
-    <ion-fab-button (click)="openAddModal()">
+  <ion-fab
+    class="task-fab"
+    vertical="bottom"
+    horizontal="end"
+    slot="fixed"
+    *ngIf="remoteConfigService.enableFloatingAdd$ | async">
+    <ion-fab-button
+      (click)="openAddModal()"
+      [class.fab-hidden]="!isFabVisible">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 
   <ion-modal class="app-modal" [isOpen]="isAddModalOpen" (didDismiss)="cancelAdd()">
     <ng-template>
-      <ion-header>
-        <ion-toolbar class="app-modal-toolbar">
-          <ion-title>Nueva Tarea</ion-title>
-          <ion-buttons slot="end">
-            <ion-button (click)="cancelAdd()">Cerrar</ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
-      <ion-content class="ion-padding app-modal-content">
-        <div class="app-modal-form">
+      <ion-content class="app-modal-content">
+        <div class="page-title-bar">
+          <span class="page-title-text">Nueva Tarea</span>
+          <ion-button fill="clear" class="page-title-btn" (click)="cancelAdd()">CERRAR</ion-button>
+        </div>
+        <div class="app-modal-body app-modal-form">
           <ion-item class="app-modal-field">
-          <ion-input label="Título" labelPlacement="floating" [(ngModel)]="newTaskTitle" placeholder="Ej: Comprar leche"></ion-input>
+            <ion-input label="Título" labelPlacement="floating" [(ngModel)]="newTaskTitle" placeholder="Ej: Comprar leche"></ion-input>
           </ion-item>
           <ion-item class="app-modal-field">
-          <ion-textarea label="Descripción" labelPlacement="floating" [(ngModel)]="newTaskDescription" placeholder="(Opcional)"></ion-textarea>
+            <ion-textarea label="Descripción" labelPlacement="floating" [(ngModel)]="newTaskDescription" placeholder="(Opcional)"></ion-textarea>
           </ion-item>
           <ion-select
             class="app-modal-select"
