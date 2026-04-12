@@ -15,4 +15,6 @@ export class TaskItemComponent {
 
   @Output() toggleTask = new EventEmitter<Task>();
   @Output() deleteTask = new EventEmitter<Task>();
+  @Output() slideOpen = new EventEmitter<void>();
+  @Output() slideClose = new EventEmitter<void>();
 }
