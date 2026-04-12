@@ -9,7 +9,13 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "cordova:prepare": "ionic cordova prepare",
+    "android:run": "ionic cordova run android",
+    "android:build:release": "ionic cordova build android --release",
+    "ios:prepare": "ionic cordova prepare ios",
+    "ios:run": "ionic cordova run ios",
+    "ios:build:release": "ionic cordova build ios --release"
   },
   "private": true,
   "dependencies": {
@@ -52,6 +58,7 @@
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",
     "cordova-android": "^15.0.0",
+    "cordova-ios": "^8.0.1",
     "cordova-plugin-device": "2.0.2",
     "cordova-plugin-ionic-keyboard": "^2.0.5",
     "cordova-plugin-ionic-webview": "^5.0.0",
@@ -80,7 +87,8 @@
       "cordova-plugin-ionic-keyboard": {}
     },
     "platforms": [
-      "android"
+      "android",
+      "ios"
     ]
   }
 }
