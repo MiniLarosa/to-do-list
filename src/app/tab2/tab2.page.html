@@ -47,16 +47,12 @@
 
   <ion-modal class="app-modal" [isOpen]="isModalOpen" (didDismiss)="cancelModal()">
     <ng-template>
-      <ion-header>
-        <ion-toolbar class="app-modal-toolbar">
-          <ion-title>{{ editingCategoryId ? 'Editar' : 'Nueva' }} Categoría</ion-title>
-          <ion-buttons slot="end">
-            <ion-button (click)="cancelModal()">Cerrar</ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
-      <ion-content class="ion-padding app-modal-content">
-        <div class="app-modal-form">
+      <ion-content class="app-modal-content">
+        <div class="page-title-bar">
+          <span class="page-title-text">{{ editingCategoryId ? 'Editar' : 'Nueva' }} Categoría</span>
+          <ion-button fill="clear" class="page-title-btn" (click)="cancelModal()">CERRAR</ion-button>
+        </div>
+        <div class="app-modal-body app-modal-form">
           <ion-item class="app-modal-field">
             <ion-input label="Nombre" labelPlacement="floating" [(ngModel)]="categoryName" placeholder="Ej: Universidad"></ion-input>
           </ion-item>

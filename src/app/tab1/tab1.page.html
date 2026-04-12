@@ -97,16 +97,12 @@
 
   <ion-modal class="app-modal" [isOpen]="isAddModalOpen" (didDismiss)="cancelAdd()">
     <ng-template>
-      <ion-header>
-        <ion-toolbar class="app-modal-toolbar">
-          <ion-title>Nueva Tarea</ion-title>
-          <ion-buttons slot="end">
-            <ion-button (click)="cancelAdd()">Cerrar</ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
-      <ion-content class="ion-padding app-modal-content">
-        <div class="app-modal-form">
+      <ion-content class="app-modal-content">
+        <div class="page-title-bar">
+          <span class="page-title-text">Nueva Tarea</span>
+          <ion-button fill="clear" class="page-title-btn" (click)="cancelAdd()">CERRAR</ion-button>
+        </div>
+        <div class="app-modal-body app-modal-form">
           <ion-item class="app-modal-field">
             <ion-input label="Título" labelPlacement="floating" [(ngModel)]="newTaskTitle" placeholder="Ej: Comprar leche"></ion-input>
           </ion-item>
