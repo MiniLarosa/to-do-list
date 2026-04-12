@@ -6,7 +6,7 @@
     position: absolute;
     left: 16px;
     right: 16px;
-    bottom: calc(8px + env(safe-area-inset-bottom));
+    bottom: calc(2px + env(safe-area-inset-bottom));
     height: 64px;
     padding: 6px;
     border-radius: 999px;

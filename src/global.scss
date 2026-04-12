@@ -40,8 +40,8 @@
   --background: transparent;
   --color: #f8fafc;
   --border-width: 0;
-  --min-height: 56px;
-  --padding-top: max(2px, env(safe-area-inset-top));
+  --min-height: 52px;
+  --padding-top: 0;
   --padding-start: 6px;
   --padding-end: 6px;
   box-shadow: none;
@@ -63,10 +63,15 @@
 }
 
 .unified-page {
-  --overflow: hidden;
+  --overflow: auto;
+  --padding-bottom: calc(88px + env(safe-area-inset-bottom));
   --background:
     radial-gradient(circle at top, rgba(var(--ion-color-primary-rgb), 0.08), transparent 36%),
     linear-gradient(180deg, rgba(var(--ion-color-primary-rgb), 0.03), transparent 220px);
+}
+
+.ios .page-toolbar {
+  --padding-top: env(safe-area-inset-top);
 }
 
 .page-shell {
