@@ -22,6 +22,17 @@ La app permite:
 - Ionic Storage (persistencia local)
 - Angular CDK Virtual Scroll (rendimiento)
 
+### Versiones usadas en esta entrega
+
+- Node.js: 24.14.1
+- Ionic CLI: 7.2.1
+- Cordova CLI: 13.0.0
+- Java JDK: 21.0.10 LTS
+- Angular: 20.x
+- Ionic Angular: 8.x
+- Cordova Android: 15.x
+- Cordova iOS: 8.x
+
 ## 3) Requisitos de entorno
 
 - Node.js 20+
@@ -95,14 +106,40 @@ Compilar release:
 ionic cordova build ios --release
 ```
 
-## 7) Sobre la IPA de iOS en Windows
+### iOS sin Mac (dejar el proyecto listo para evaluación)
 
-En Windows no se puede generar IPA de forma nativa con Cordova, porque Apple exige macOS + Xcode.
+En Windows no se puede generar IPA de forma nativa porque Apple exige macOS + Xcode, pero sí puedes dejar el proyecto preparado para que el evaluador compile iOS.
 
-La configuración iOS del proyecto ya está incluida; cualquier evaluador con macOS puede compilar sin cambiar el código.
+Paso a paso:
+
+1. Instala dependencias:
+
+```bash
+npm install
+```
+
+2. Valida flujo funcional en web:
+
+```bash
+ionic serve
+```
+
+3. Valida flujo funcional en Android:
+
+```bash
+ionic cordova run android
+```
+
+4. Deja iOS configurado en el proyecto:
+
+```bash
+npx cordova platform add ios
+ionic cordova prepare ios
+```
 
 
-## 8) Optimización de rendimiento aplicada
+
+## 7) Optimización de rendimiento aplicada
 
 - `ChangeDetectionStrategy.OnPush` en vistas principales.
 - `trackBy` en listas para reducir rerenders.
@@ -110,7 +147,7 @@ La configuración iOS del proyecto ya está incluida; cualquier evaluador con ma
 - Limpieza de subscripciones (`takeUntil`) en destroy.
 - Persistencia local reactiva con `BehaviorSubject`.
 
-## 9) Calidad y mantenibilidad
+## 8) Arquitectura del proyecto
 
 - Separación por capas (`services`, `models`, `pages`, `components`).
 - Lógica de negocio centralizada en `TaskService`.
@@ -118,7 +155,7 @@ La configuración iOS del proyecto ya está incluida; cualquier evaluador con ma
 - Código en español coherente con la UI.
 - Pruebas unitarias existentes en tabs y componentes principales.
 
-## 10) Respuestas solicitadas de la prueba
+## 9) Respuestas solicitadas de la prueba
 
 ### ¿Cuáles fueron los principales desafíos?
 
@@ -141,7 +178,7 @@ La configuración iOS del proyecto ya está incluida; cualquier evaluador con ma
 - Conservando una estructura consistente y fácil de extender.
 
 
-## 11) Artefactos de entrega
+## 10) Entregables de la prueba
 
 ### APK (Android)
 
@@ -154,7 +191,7 @@ La configuración iOS del proyecto ya está incluida; cualquier evaluador con ma
 
 ### IPA (iOS)
 
-- Debe generarse en macOS + Xcode con:
+- Puede generarse en macOS + Xcode con:
 
 ```bash
 ionic cordova build ios --release
@@ -162,5 +199,5 @@ ionic cordova build ios --release
 
 ---
 
-Si se evalúa desde Windows, el proyecto queda entregado con configuración Cordova lista para Android e iOS, y con instrucciones completas para compilar IPA en entorno macOS.
+Si se evalúa desde Windows, el proyecto queda entregado con Android funcional, iOS configurado y pasos claros para compilar la IPA en macOS.
 
